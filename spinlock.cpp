@@ -100,8 +100,13 @@ Output 2-
 
 /*
 Something to remember:
-    One of the advantages of using atomic_flags instead of normal bool flags is that
+    1.) One of the advantages of using atomic_flags instead of normal bool flags is that
     the method test_and_set() is an atomic operation that means it checks the current value of flag and
     sets is accordingly and instead of being two different operations,this whole thing is one atomic operation.
-    Atomic operation is basically the operation which can't be further divided(or interrupted) as the term atom-ic.
+    Atomic operation is basically the operation which can't be further divided(or interrupted) as the term.
+
+    2.) This spinlock uses pull principle.That means the thread doesn't sit idle listen for a message 
+    from the thread currently accessing spinlock,it constantly tries to access the spinlock.
+    Unlike this,when threads use the same mutex,they wait for messages enabled by condition_variable from 
+    the thread currently active on mutex. 
 */
