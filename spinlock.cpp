@@ -8,7 +8,9 @@ Creating spinlock with atomic flags .Unlike mutexes,a thread which is spinlocked
 #include<thread>
 #include<pthread.h>
 
-
+/*
+    This class acts as an interface for threads therefore locking and unlocking them according to atomic flag.
+*/
 class spinlock{
 
     std::atomic_flag flag;
@@ -18,9 +20,14 @@ class spinlock{
     flag(ATOMIC_FLAG_INIT){}
 
     /*
-    flag.test_and_set() is an atomic operation which returns true only if the flag was initially set to false which we did in constructor.
+
+    flag.test_and_set() is an atomic operation which sets flag to true and returns true
+    only if the flag was initially set to false which we did in constructor.
     So the first process which accesses the spin.lock() method will get locked and
-    if another thread t2 tries to access spin.lock() it will not get locked untill the flag is again set to false with unlock method.
+    if another thread t2 tries to access spin.lock() ,while loop returns true to t2/t3 so t2/t3 is caught in the rat race.
+    When t1 completes,it executes flag.clear() and sets flag to false.And instantly t2/t3 gets locked and starts executing
+    and sets the flag again to true with flag.test_and_set() and now the remaining other thread is caught in the rat race.
+
     */
     void lock(){
         while(flag.test_and_set());
@@ -70,4 +77,31 @@ int main()
 
 /*
 Note: Compile this unit with the flag -lpthread which tells the compiler that it has to link the pthread /POSIX thread library.
+*/
+
+/*
+A VERY IMPORTANT NOTE: Since the flag t2 and t3 are competing to get the lock while t1 executes,
+therefore any thread can be locked after t1 sets the flag to false again.
+
+Which implies there can be two possible outputs of above code:
+
+Output 1-
+    Current value of a is 5 Work done 
+    Current value of a is 10 Work done
+     Current value of a is 15 Work done 
+
+Output 2-
+    Current value of a is 5 Work done 
+    Current value of a is 15 Work done
+     Current value of a is 10 Work done      
+*/
+
+
+
+/*
+Something to remember:
+    One of the advantages of using atomic_flags instead of normal bool flags is that
+    the method test_and_set() is an atomic operation that means it checks the current value of flag and
+    sets is accordingly and instead of being two different operations,this whole thing is one atomic operation.
+    Atomic operation is basically the operation which can't be further divided(or interrupted) as the term atom-ic.
 */
