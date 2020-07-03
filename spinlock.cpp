@@ -131,8 +131,6 @@ void someSharedworkfort2(int n){
 ================================================================================================================
 If we pass the above function as callable unit to t2,then the sequence obtained always will be
 t1->t3->t2.
-We can also achieve the same for n threads,t1,t2,t3,....tn.If we want them to go in this given sequence,
-we can simply put the thread tk+1 for sleep for few more ms than tk.
 
 You can uncomment the above code and pass it to t2 ,to see for yourself.
 */
