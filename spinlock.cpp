@@ -6,7 +6,7 @@ Creating spinlock with atomic flags .Unlike mutexes,a thread which is spinlocked
 #include<iostream>
 #include<atomic>
 #include<thread>
-#include<pthread.h>
+
 
 /*
     This class acts as an interface for threads therefore locking and unlocking them according to atomic flag.
@@ -52,13 +52,14 @@ int a;
 //This is the function from which resources are shared between threads.
 void someSharedwork(int n){
     spin.lock();
-
+   
     a=n;
     std::cout<<"Current value of a is "<<a;
     spin.unlock();
 
     std::cout<<"Work done "<<std::endl;
 }
+
 
 int main()
 {   
@@ -109,4 +110,29 @@ Something to remember:
     from the thread currently accessing spinlock,it constantly tries to access the spinlock.
     Unlike this,when threads use the same mutex,they wait for messages enabled by condition_variable from 
     the thread currently active on mutex. 
+*/
+
+
+/*--------------------One more interesting thing---------------------------------------------------------------*/
+/*
+We can simulate a mutex-like and predictable behaviour by putting one of the threads to sleep for few ms,
+before competing for the lock.
+
+================================================================================================================
+void someSharedworkfort2(int n){
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    spin.lock();
+    a=n;
+    std::cout<<"Current value of a is "<<a;
+    spin.unlock();
+
+    std::cout<<"Work done "<<std::endl;
+}
+================================================================================================================
+If we pass the above function as callable unit to t2,then the sequence obtained always will be
+t1->t3->t2.
+We can also achieve the same for n threads,t1,t2,t3,....tn.If we want them to go in this given sequence,
+we can simply put the thread tk+1 for sleep for few more ms than tk.
+
+You can uncomment the above code and pass it to t2 ,to see for yourself.
 */
