@@ -30,7 +30,7 @@ class spinlock{
 
     */
     void lock(){
-        while(flag.test_and_set());
+        while(flag.test_and_set(std::memory_order_acquire)) std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
     /*flag.clear() unlocks spin by setting the flag to false so that 
@@ -38,7 +38,7 @@ class spinlock{
     can now lock itself by spin.lock().
     */
     void unlock(){
-        flag.clear();
+        flag.clear(std::memory_order_release);
     }
 
 };
@@ -54,10 +54,10 @@ void someSharedwork(int n){
     spin.lock();
    
     a=n;
-    std::cout<<"Current value of a is "<<a;
+    std::cout<<"Current value of a is "<<a<<"\n";
     spin.unlock();
 
-    std::cout<<"Work done "<<std::endl;
+    std::cout<<"Work done \n";
 }
 
 

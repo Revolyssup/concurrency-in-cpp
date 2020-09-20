@@ -24,7 +24,7 @@ void printingThread(){
         so there is no use of keeping the thread t2 busy for that time. 
         If you put it to sleep at 4999ms the entire operation will take 9999ms instead of
         5000ms because the flag would not be true after 4999 ms and t2 will again sleep for 4999ms*/
-        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(5001));
     }
     for(auto i: sharedVec)
         {

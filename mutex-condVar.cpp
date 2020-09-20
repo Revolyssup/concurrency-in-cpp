@@ -27,8 +27,7 @@ bool updateReady{false};
 /*
 This callable unit is allotted to t1 and it initializes the vector and then 
 gives off control through conVar*/
-void setDataReady()
-{
+void setDataReady(){
     std::cout<<"Preparing data..."<<std::endl;
 
     //sleeps the thread to get async behaviour
@@ -45,8 +44,7 @@ void setDataReady()
 
 
 /*This function is given to t2 and it waits for t1 to notify it and set its flag to true*/
-void waitForWork(int i,int n)
-{
+void waitForWork(int i,int n){
     std::cout<<"Waiting for data ..."<<std::endl;
 
     //setting a unique lock with the common mutex  
@@ -63,8 +61,7 @@ void waitForWork(int i,int n)
 }
 
 
-void waitForUpdate(int i,int n)
-{
+void waitForUpdate(int i,int n){
    
     std::unique_lock<std::mutex> lock(mutex_);
     conVar.wait(lock,[]{return updateReady;});
