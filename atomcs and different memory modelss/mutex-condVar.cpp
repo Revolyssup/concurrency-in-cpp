@@ -48,10 +48,10 @@ void waitForWork(int i,int n){
     std::cout<<"Waiting for data ..."<<std::endl;
 
     //setting a unique lock with the common mutex  
-    std::unique_lock<std::mutex> lock(mutex_);
-
+    std::unique_lock<std::mutex> lock(mutex_); //locks the mutex
+   
     /*waiting here for notification.along with a lamda function which returns true when t1 sets the flag to true.*/
-    conVar.wait(lock,[]{return dataReady;});
+    conVar.wait(lock,[]{return dataReady;}); //Unlocks the mutex and goes in wait state.Will evaluate predicate when get notified to see if it should acquire the lock back.
     //doing work when the lock is given to this function(t2)
     sharedVec[i]=n;
     //setting flag true for t3
@@ -70,7 +70,7 @@ void waitForUpdate(int i,int n){
     
     
     std::cout<<"update done"<<std::endl;
-    conVar.notify_one();
+   
 }
 
 int main(int argc,char** argv){

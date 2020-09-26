@@ -1,6 +1,6 @@
 //This is a wrapper class aroung a thread.
-#include<thread>
-#include <utility>
+#pragma once
+#include "utils.hpp"
 namespace atstl{
     class scoped_thread{
         std::thread t;
